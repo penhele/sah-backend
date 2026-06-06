@@ -9,7 +9,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://sah.vercel.app'],
+    origin: ['http://localhost:3000', 'https://panpen.vercel.app'],
     credentials: true,
   });
 
