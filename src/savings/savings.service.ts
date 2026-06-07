@@ -12,7 +12,7 @@ export class SavingsService {
       data: {
         amount: dto.amount,
         userId: dto.userId,
-        updated_at: new Date(),
+        date: new Date(dto.date),
       },
     });
   }
@@ -38,7 +38,6 @@ export class SavingsService {
       data: {
         amount: dto.amount,
         userId: dto.userId,
-        updated_at: new Date(),
       },
       where: {
         id,

@@ -20,16 +20,17 @@ model User {
   savings Saving[]
 
   created_at DateTime @default(now())
-  updated_at DateTime
+  updated_at DateTime @updatedAt
 }
 
 model Saving {
-  id     String  @id @default(uuid())
+  id     String   @id @default(uuid())
   amount Decimal
+  date   DateTime
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
   created_at DateTime @default(now())
-  updated_at DateTime
+  updated_at DateTime @updatedAt
 }
