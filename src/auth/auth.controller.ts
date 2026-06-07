@@ -4,12 +4,12 @@ import {
   Body,
   Get,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { GetUser } from './decorators/get-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -25,9 +25,9 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
-  getMe(@Req() req) {
-    return this.authService.getMe(req.user.sub);
+  @UseGuards(JwtAuthGuard)
+  getMe(@GetUser('sub') userId: string) {
+    return this.authService.getMe(userId);
   }
 }
