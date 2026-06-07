@@ -30,4 +30,10 @@ export class AuthController {
   getMe(@GetUser('sub') userId: string) {
     return this.authService.getMe(userId);
   }
+
+  @Post('validate')
+  @UseGuards(JwtAuthGuard)
+  validate() {
+    return { valid: true };
+  }
 }
