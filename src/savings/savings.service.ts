@@ -5,22 +5,45 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class SavingsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   create(dto: CreateSavingDto) {
     return this.prisma.saving.create({
-      data: {
-        amount: dto.amount,
-        userId: dto.userId,
-        date: new Date(dto.date),
-      },
+      data: dto,
     });
   }
 
   findAll() {
     return this.prisma.saving.findMany({
       include: {
-        user: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            created_at: true,
+            updated_at: true,
+          },
+        },
+      },
+    });
+  }
+
+  findByUserId(userId: string) {
+    return this.prisma.saving.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            created_at: true,
+            updated_at: true,
+          },
+        },
       },
     });
   }

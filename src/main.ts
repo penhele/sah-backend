@@ -12,10 +12,7 @@ async function bootstrap() {
     }),
   );
 
-  app.enableCors({
-    origin: ['http://localhost:3000', 'https://panpen.vercel.app'],
-    credentials: true,
-  });
+  app.enableCors();
 
   await app.listen(process.env.PORT ?? 3000);
 }

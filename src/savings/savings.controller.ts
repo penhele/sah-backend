@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { SavingsService } from './savings.service';
 import { CreateSavingDto } from './dto/create-saving.dto';
 import { UpdateSavingDto } from './dto/update-saving.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { GetUser } from '../auth/decorators/get-user.decorator';
 
 @Controller('savings')
 export class SavingsController {
@@ -15,6 +17,17 @@ export class SavingsController {
   @Get()
   findAll() {
     return this.savingsService.findAll();
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  findMySavings(@GetUser('sub') userId: string) {
+    return this.savingsService.findByUserId(userId);
+  }
+
+  @Get('user/:userId')
+  findByUser(@Param('userId') userId: string) {
+    return this.savingsService.findByUserId(userId);
   }
 
   @Get(':id')

@@ -34,3 +34,11 @@ model Saving {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
+
+model SavingGoal {
+  id     String  @id @default(uuid())
+  target Decimal
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
