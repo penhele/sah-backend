@@ -90,20 +90,32 @@ export class AuthService {
       where: {
         id: userId,
       },
-      include: {
-        savings: {
-          select: {
-            amount: true,
-          },
-        },
-      },
     });
 
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
 
-    const total_amount = user.savings.reduce((acc, curr) => acc + Number(curr.amount), 0);
+    const savings = await this.prisma.saving.findMany({
+      where: { userId },
+      select: { amount: true, date: true },
+    });
+
+    let total_amount = 0;
+    const yearly_breakdown: Record<string, number> = {};
+    const monthly_breakdown: Record<string, number> = {};
+
+    for (const saving of savings) {
+      const amount = Number(saving.amount);
+      total_amount += amount;
+
+      const date = new Date(saving.date);
+      const year = date.getFullYear().toString();
+      const month = `${year}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+      yearly_breakdown[year] = (yearly_breakdown[year] || 0) + amount;
+      monthly_breakdown[month] = (monthly_breakdown[month] || 0) + amount;
+    }
 
     return {
       id: user.id,
@@ -111,6 +123,8 @@ export class AuthService {
       email: user.email,
       role: user.role,
       total_amount,
+      yearly_breakdown,
+      monthly_breakdown,
     };
   }
 }
