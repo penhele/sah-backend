@@ -5,8 +5,8 @@ import { PrismaService } from '../prisma/prisma.service';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  findAll() {
-    return this.prisma.user.findMany({
+  async findAll() {
+    const users = await this.prisma.user.findMany({
       select: {
         id: true,
         name: true,
@@ -14,7 +14,21 @@ export class UsersService {
         role: true,
         created_at: true,
         updated_at: true,
+        savings: {
+          select: {
+            amount: true,
+          },
+        },
       },
+    });
+
+    return users.map((user) => {
+      const total_amount = user.savings.reduce(
+        (acc, curr) => acc + Number(curr.amount),
+        0,
+      );
+      const { savings, ...rest } = user;
+      return { ...rest, total_amount };
     });
   }
 
@@ -28,6 +42,11 @@ export class UsersService {
         role: true,
         created_at: true,
         updated_at: true,
+        savings: {
+          select: {
+            amount: true,
+          },
+        },
       },
     });
 
@@ -35,6 +54,12 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    return user;
+    const total_amount = user.savings.reduce(
+      (acc, curr) => acc + Number(curr.amount),
+      0,
+    );
+    const { savings, ...rest } = user;
+
+    return { ...rest, total_amount };
   }
 }

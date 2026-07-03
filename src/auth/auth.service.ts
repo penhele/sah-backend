@@ -90,17 +90,27 @@ export class AuthService {
       where: {
         id: userId,
       },
+      include: {
+        savings: {
+          select: {
+            amount: true,
+          },
+        },
+      },
     });
 
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
 
+    const total_amount = user.savings.reduce((acc, curr) => acc + Number(curr.amount), 0);
+
     return {
       id: user.id,
       name: user.name,
       email: user.email,
       role: user.role,
+      total_amount,
     };
   }
 }
